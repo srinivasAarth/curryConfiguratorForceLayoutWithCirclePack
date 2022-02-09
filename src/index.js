@@ -8,8 +8,8 @@ import ForceSimulationWithCirclePack from "./components/ForceSimulationWithCircl
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
-    <Config />
+    {/* <App /> */}
+    {/* <Config /> */}
     <ForceSimulationWithCirclePack />
   </React.StrictMode>,
   document.getElementById("root")

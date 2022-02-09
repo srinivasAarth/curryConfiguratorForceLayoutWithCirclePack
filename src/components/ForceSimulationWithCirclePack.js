@@ -2,6 +2,7 @@ import React from "react";
 import * as d3 from "d3";
 import data from "./circlePackSimulation.json";
 // import { event } from "d3-selection";
+import "../App.css";
 
 const ForceSimulationWithCirclePack = () => {
   const circlePackRef = React.useRef();
@@ -19,6 +20,11 @@ const ForceSimulationWithCirclePack = () => {
     };
     //   const color =
     //     nodeGroup == null ? null : d3.scaleOrdinal(nodeGroups, colors);
+
+    const text = (links) => {
+      console.log(links);
+    };
+    text(links);
 
     const simulation = d3
       .forceSimulation(nodes)
@@ -50,24 +56,72 @@ const ForceSimulationWithCirclePack = () => {
       .append("svg")
       .attr("viewBox", [0, 0, width, height]);
 
-    const link = svg
+    const linkss = svg
       .append("g")
-      .attr("stroke", "#999")
-      .attr("stroke-opacity", 0.6)
-      .selectAll("line")
+      .selectAll("g")
       .data(links)
-      .join("line")
-      // .attr("stroke-width", (d) => Math.sqrt(d.value));
-      .attr("stroke-width", (d) => console.log(d));
+      .join("g")
+      .attr("class", "link")
 
-    link
+      .attr("class", "link-line")
+
+      .attr("stroke-opacity", 1)
+      .append("line")
+      .attr("stroke", "black")
+      .style("opacity", ".1")
+      .attr("stroke-width", (d) => Math.sqrt(d.value));
+    const linkText = svg
+      .selectAll(".link-line")
       .append("text")
-      .style("fill", "black")
-      .attr("font-size", ".3em")
+      .attr("class", "link-label")
+      .attr("fill", "Black")
+      .attr("dy", 5)
+      // .attr("startOffset", "20%")
       .attr("text-anchor", "middle")
+      .attr("font-size", ".3em")
       .attr("alignment-baseline", "middle")
-      // .attr("dy", (d) => nodeRadiusScale(d.value) + 10)
-      .text((d) => d.source.y);
+      // .attr("margin-top", "-1em")
+      // .style("filter", "red")
+      .text(function (d, i) {
+        return `Link-${i}`;
+      });
+    // .selectAll("line")
+    // .data(links)
+
+    // link.append("line").attr("stroke-width", (d) => console.log(d));
+
+    // =============================text to links============================
+
+    // linkss.append("line").attr("stroke", "#999").attr("stroke-opacity", 0.6);
+    //
+
+    // link
+    //   .append("text")
+    //   .style("fill", "black")
+    //   .attr("font-size", ".3em")
+    //   .attr("text-anchor", "middle")
+    //   .attr("alignment-baseline", "middle")
+    // .attr("dy", (d) => nodeRadiusScale(d.value) + 10)
+    // .text((d) => d.source.y);
+
+    // linkss.append("line");
+    //   .attr("stroke", "#999")
+    //   .attr("stroke-opacity", 0.6)
+    //   .attr("stroke-width", 10);
+
+    // ====================================edge paths================================
+
+    // edgelabels
+    //   .append("textPath")
+    //   .attr("xlink:href", function (d, i) {
+    //     return "#edgepath" + i;
+    //   })
+    //   .style("text-anchor", "middle")
+    //   .style("pointer-events", "none")
+    //   .attr("startOffset", "50%")
+    //   .text(function (d) {
+    //     return "donnn";
+    //   });
 
     function drag(simulation) {
       function dragstarted(d) {
@@ -107,7 +161,7 @@ const ForceSimulationWithCirclePack = () => {
       .attr("fill", (d, i) => `#${i}${d.x.toString().slice(15)}`)
       .on("mouseover", addText)
       .on("mouseout", function () {
-        link.style("stroke-width", 1);
+        linkss.style("stroke-width", 1);
       });
 
     nodeG
@@ -129,13 +183,13 @@ const ForceSimulationWithCirclePack = () => {
         //.text("hello");
         .text(d.id + d.group);
       console.log(d);
-      link.style("stroke-width", function (l) {
-        if (d === l.source || d === l.target) return 4;
+      linkss.style("stroke-width", function (l) {
+        if (d === l.source || d === l.target) return 1;
         else return 1;
       });
-      link.style("stoke", function (l) {
-        if (d === l.source || d === l.target) return "green";
-        else return "red";
+      linkss.style("opacity", function (l) {
+        if (d === l.source || d === l.target) return "1";
+        else return ".1";
       });
     }
 
@@ -154,13 +208,34 @@ const ForceSimulationWithCirclePack = () => {
     });
 
     simulation.on("tick", () => {
-      link
+      linkss
         .attr("x1", (d) => d.source.x)
         .attr("y1", (d) => d.source.y)
         .attr("x2", (d) => d.target.x)
         .attr("y2", (d) => d.target.y);
 
       nodeG.attr("transform", (d) => `translate(${d.x}, ${d.y})`);
+      // linkText
+      //   .attr("x", function (d) {
+      //     return (d.source.x + d.target.x) / 2;
+      //   })
+      //   .attr("y", function (d) {
+      //     return (d.source.y + d.target.y) / 2;
+      //   });
+      linkText.attr("transform", function (d) {
+        //calcul de l'angle du label
+        var angle =
+          (Math.atan((d.source.y - d.target.y) / (d.source.x - d.target.x)) *
+            180) /
+          Math.PI;
+        return (
+          "translate(" +
+          [(d.source.x + d.target.x) / 2, (d.source.y + d.target.y) / 2] +
+          ")rotate(" +
+          angle +
+          ")"
+        );
+      });
     });
 
     // invalidation.then(() => simulation.stop());
