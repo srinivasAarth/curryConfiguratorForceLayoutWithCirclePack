@@ -5,12 +5,14 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import Config from "./components/config";
 import ForceSimulationWithCirclePack from "./components/ForceSimulationWithCirclePack";
+import ClassLayoutGraph from "./components/ClassLayoutGraph";
 
 ReactDOM.render(
   <React.StrictMode>
     {/* <App /> */}
     {/* <Config /> */}
     <ForceSimulationWithCirclePack />
+    <ClassLayoutGraph />
   </React.StrictMode>,
   document.getElementById("root")
 );
