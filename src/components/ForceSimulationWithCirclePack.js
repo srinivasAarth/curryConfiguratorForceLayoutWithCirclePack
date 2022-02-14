@@ -14,6 +14,16 @@ const ForceSimulationWithCirclePack = () => {
     const links = data.links.map((d) => Object.create(d));
     const nodes = data.nodes.map((d) => Object.create(d));
     const nodeRadiusScale = d3.scaleSqrt().domain([0, 50]).range([10, 50]);
+    var colorArray = [
+      "#651fff",
+      "#69b3a2",
+
+      "#f28c1c",
+      "#e56969",
+      "#5ac58a",
+      "#651fff",
+      "#c51263",
+    ];
     const color = () => {
       const scale = d3.scaleOrdinal(d3.schemeCategory10);
       return (d) => scale(d.group);
@@ -28,6 +38,9 @@ const ForceSimulationWithCirclePack = () => {
 
     const simulation = d3
       .forceSimulation(nodes)
+      // .force("x", d3.forceX(width / 2).strength(0.4))
+      // .force("y", d3.forceY(height / 2).strength(0.6))
+
       .force(
         "link",
         d3.forceLink(links).id((d) => d.id)
@@ -80,7 +93,8 @@ const ForceSimulationWithCirclePack = () => {
       .attr("text-anchor", "middle")
       .attr("font-size", ".3em")
       .attr("alignment-baseline", "middle")
-      // .attr("margin-top", "-1em")
+      .attr("dy", (d) => nodeRadiusScale(d.value) - 24)
+
       // .style("filter", "red")
       .text(function (d, i) {
         return `Link-${i}`;
@@ -158,7 +172,10 @@ const ForceSimulationWithCirclePack = () => {
     nodeG
       .append("circle")
       .attr("r", (d) => nodeRadiusScale(d.value))
-      .attr("fill", (d, i) => `#${i}${d.x.toString().slice(15)}`)
+      // .attr("fill", (d, i) => `#${i}${d.x.toString().slice(15)}`)
+      .attr("fill", (d, i) => {
+        return colorArray[i];
+      })
       .on("mouseover", addText)
       .on("mouseout", function () {
         linkss.style("stroke-width", 1);
@@ -170,7 +187,7 @@ const ForceSimulationWithCirclePack = () => {
       .attr("font-size", ".3em")
       .attr("text-anchor", "middle")
       .attr("alignment-baseline", "middle")
-      .attr("dy", (d) => nodeRadiusScale(d.value) + 10)
+      .attr("dy", (d) => nodeRadiusScale(d.value) + 5)
       .text((d) => d.id);
     function addText(event, d) {
       console.log(d);

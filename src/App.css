@@ -12,3 +12,7 @@
   justify-content: center;
   display: flex; */
 }
+.ImageClass {
+  height: 50px;
+  width: 100px;
+}

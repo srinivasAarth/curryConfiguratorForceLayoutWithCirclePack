@@ -1,12 +1,16 @@
+/* eslint-disable no-useless-concat */
 /* eslint-disable no-undef */
-import "./App.css";
+import "../App.css";
 import * as d3 from "d3";
 import React from "react";
 // import { ForceGraph } from "@b3a26c8d64d1450e/force-directed-graph/2";
-import shortData from "./components/circlePackSimulation.json";
+import shortData from "../components/circlePackSimulation.json";
+import mySubsitutionImage from "../asserts/substitutionSvg.svg";
+import shiffleImage from "../asserts/shiffleIcons.svg";
+import nodeImage from "../asserts/recipe node.svg";
 // import invalidation from "d3";
 
-function App() {
+function AppendSvgNode() {
   var myRef = React.useRef(null);
   React.useEffect(() => {
     // Copyright 2021 Observable, Inc.
@@ -43,7 +47,7 @@ function App() {
         linkTarget = ({ target }) => target, // given d in links, returns a node identifier string
         linkStroke = "#999", // link stroke color
         linkStrokeOpacity = 0.6, // link stroke opacity
-        linkStrokeWidth = 3, // given d in links, returns a stroke width in pixels
+        linkStrokeWidth = 10, // given d in links, returns a stroke width in pixels
         linkStrokeLinecap = "round", // link stroke linecap
         linkStrength,
         colors = d3.schemeTableau10, // an array of color strings, for the node groups
@@ -76,20 +80,15 @@ function App() {
       // Construct the scales.
       const color =
         nodeGroup == null ? null : d3.scaleOrdinal(nodeGroups, colors);
-      // const color = () => {
-      //   const scale = d3.scaleOrdinal(nodeGroups, colors);
-      //   return (d) => scale(d.group);
-      // };
 
-      // Construct the forces.
       const forceNode = d3
         .forceManyBody()
         .strength(function (d, i) {
-          var a = i === 0 ? -0 : -100;
+          var a = i === 0 ? -10000 : -6000;
           return a;
         })
-        .distanceMin(200)
-        .distanceMax(1000);
+        .distanceMin(0)
+        .distanceMax(4000);
       const forceLink = d3.forceLink(links).id(({ index: i }) => N[i]);
       if (nodeStrength !== undefined) forceNode.strength(nodeStrength);
       if (linkStrength !== undefined) forceLink.strength(linkStrength);
@@ -99,8 +98,7 @@ function App() {
         .force("link", forceLink)
         .force("charge", forceNode)
         .force("center", d3.forceCenter())
-        .force("x", d3.forceX())
-        .force("y", d3.forceY())
+
         .on("tick", ticked);
 
       const svg = d3
@@ -116,35 +114,126 @@ function App() {
         .append("g")
         .attr("stroke", "black")
         .attr("stroke-opacity", linkStrokeOpacity)
-        .attr(
-          "stroke-width",
-          typeof linkStrokeWidth !== "function" ? linkStrokeWidth : null
-        )
+        .attr("stroke-width", 1)
         .attr("stroke-linecap", linkStrokeLinecap)
         .selectAll("line")
-        .attr("line-width", 800)
+        .attr("line-width", 2)
         .data(links)
         .join("line");
 
       const node = svg
+
         .append("g")
-        .attr("fill", "white")
-        .attr("stroke", nodeStroke)
-        .attr("stroke-opacity", nodeStrokeOpacity)
-        .attr("stroke-width", nodeStrokeWidth)
-        .selectAll("circle")
+        .selectAll("g")
         .data(nodes)
-        .join("circle")
-        .attr("r", nodeRadius)
+        .join("g")
+
+        .attr("class", (d, i) =>
+          i === 0 ? `imgClass${i}`.toString() : "imgClassing"
+        )
+
         .on("mouseover", addText)
         .on("mouseleave", removeText)
         .on("mouseout", function () {
           link.style("stroke-width", 1);
         })
         .call(drag(simulation));
+      // center circle
+      svg
+        .selectAll(".imgClass0")
+        .append("circle")
+        .attr("r", 40)
+        .attr("fill", "white")
+        .attr("stroke", "#f5b56e")
+        .style("stroke-width", 1.5);
+      // rectangle for nodes
+      svg
+        .selectAll(".imgClassing")
+        .append("rect")
 
-      const smallCircles = node;
+        .attr("height", "40px")
+        .attr("width", "130px")
+        .attr("fill", "white")
+        .attr("x", "-60px")
+        .attr("y", "-20px")
+        .attr("rx", "20px")
+        .style("stroke", "#8ee556")
+        .style("stroke-width", 2);
+      // append circles in rectangle node
+      svg
+        .selectAll(".imgClassing")
+        .append("circle")
+        .attr("r", 20)
+        .attr("cx", -40)
+        .attr("fill", "#e8fadc")
+        .style("stroke", "#8ee556")
+        .style("stroke-width", 2);
+      // bold text in rectangle node
+      svg
+        .selectAll(".imgClassing")
+        .append("text")
+        .style("fill", "black")
+        .style("font-weight", "bolder")
+        .style("font-family", "Roboto, sans-serif")
+        .attr("font-size", ".5em")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "middle")
+        .attr("dy", -6)
+        .attr("dx", 10)
+        .text((d) => d.id);
+      // light text in rectangle node
+      svg
+        .selectAll(".imgClassing")
+        .append("text")
+        .style("fill", "gray")
+        .style("font-weight", "bolder")
+        // .style("color", "red")
+        .style("font-family", "Roboto, sans-serif")
+        .style("text-align", "left")
+        .attr("font-size", ".4em")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "middle")
+        .attr("dy", 4)
+        .attr("dx", 10)
+        .text((d, i) => `${i * 10}`.toString() + " " + "gms");
+      // append circle for substitution
+      svg
+        .selectAll(".imgClassing")
+        .append("circle")
+        .attr("r", 9)
+        .attr("cx", 60)
+        .attr("cy", -20)
+        .attr("fill", "#cbcbcb")
+        .style("stroke", "rgba(0, 0, 0, 0.803)")
+        .style("stroke-width", 1.5);
+      // append svg images to the bigger circles
+      svg
+        .selectAll(".imgClassing")
+        .append("svg:image")
+        .attr("xlink:href", mySubsitutionImage)
+        .attr("x", "-50")
+        .attr("y", "-10")
+        .attr("width", "20")
+        .attr("height", "20");
+      // append substitution shiffle icons to the small icons
 
+      svg
+        .selectAll(".imgClassing")
+        .append("svg:image")
+        .attr("xlink:href", shiffleImage)
+        .attr("x", "37.4")
+        .attr("y", "-42.5")
+        .attr("width", "45")
+        .attr("height", "45");
+      // append node svg to the center one circle
+      svg
+        .selectAll(".imgClass0")
+        .append("svg:image")
+        .attr("xlink:href", nodeImage)
+        .attr("x", "-40")
+        .attr("y", "-40")
+        .attr("width", "80")
+        .attr("height", "80");
       function addText(event, d) {
         console.log(d);
         svg
@@ -154,13 +243,13 @@ function App() {
           .attr("y", -200)
           .attr("font-size", ".85em")
           //.text("hello");
-          .text(d.id + d.group);
+          .text(d.id);
         console.log(d);
         link.style("stroke-width", function (l) {
           if (d === l.source || d === l.target) return 4;
           else return 1;
         });
-        link.style("stoke", function (l) {
+        link.style("fill", function (l) {
           if (d === l.source || d === l.target) return "green";
           else return "red";
         });
@@ -188,8 +277,7 @@ function App() {
           .attr("x2", (d) => d.target.x)
           .attr("y2", (d) => d.target.y);
 
-        node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
-        smallCircles.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+        node.attr("transform", (d) => `translate(${d.x}, ${d.y})`);
       }
 
       function drag(simulation) {
@@ -223,4 +311,4 @@ function App() {
   return <div ref={myRef} className="App"></div>;
 }
 
-export default App;
+export default AppendSvgNode;
