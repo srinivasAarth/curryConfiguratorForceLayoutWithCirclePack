@@ -7,9 +7,15 @@ import Config from "./components/config";
 import ForceSimulationWithCirclePack from "./components/ForceSimulationWithCirclePack";
 import ClassLayoutGraph from "./components/ClassLayoutGraph";
 import AppendSvgNode from "./components/AppendSvgNode";
+import ArrowMark from "./components/ArrowMark";
+import CollapsedForceLayout from "./components/CollapsedForceLayout";
+import CillapsedFLG from "./components/CillapsedFLG";
 
 ReactDOM.render(
   <React.StrictMode>
+    <CillapsedFLG />
+    {/* <CollapsedForceLayout /> */}
+    <ArrowMark />
     <AppendSvgNode />
     {/* <App /> */}
     {/* <Config /> */}

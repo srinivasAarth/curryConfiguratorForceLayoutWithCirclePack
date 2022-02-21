@@ -1,0 +1,21 @@
+{
+    "name": "flare","children":
+     [
+         { "name": "analytics", "children": [ {"name": "cluster" }, {"name": "graph"}, {"name": "optimization"}]},
+         { "name": "analytics", "children": [ {"name": "cluster" }, {"name": "graph"}, {"name": "optimization"}]},
+         { "name": "analytics", "children": [ {"name": "cluster" }, {"name": "graph"}, {"name": "optimization"}]},
+         { "name": "analytics", "children": [ {"name": "cluster" }, {"name": "graph"}, {"name": "optimization"}]},
+         { "name": "analytics", "children": [ {"name": "cluster" }, {"name": "graph"}, {"name": "optimization"}]},
+         { "name": "analytics", "children": [ {"name": "cluster" }, {"name": "graph"}, {"name": "optimization"}]},
+         { "name": "analytics", "children": [ {"name": "cluster" }, {"name": "graph"}, {"name": "optimization"}]},
+         { "name": "analytics", "children": [ {"name": "cluster" }, {"name": "graph"}, {"name": "optimization"}]},
+         { "name": "analytics", "children": [ {"name": "cluster" }, {"name": "graph"}, {"name": "optimization"}]},
+         { "name": "analytics", "children": [ {"name": "cluster" }, {"name": "graph"}, {"name": "optimization"}]},
+         { "name": "analytics", "children": [ {"name": "cluster" }, {"name": "graph"}, {"name": "optimization"}]},
+         { "name": "analytics", "children": [ {"name": "cluster" }, {"name": "graph"}, {"name": "optimization"}]},
+         { "name": "analytics", "children": [ {"name": "cluster" }, {"name": "graph"}, {"name": "optimization"}]},
+         { "name": "analytics", "children": [ {"name": "cluster" }, {"name": "graph"}, {"name": "optimization"}]},
+         { "name": "analytics", "children": [ {"name": "cluster" }, {"name": "graph"}, {"name": "optimization"}]}
+
+    ]
+   }

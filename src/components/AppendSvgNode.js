@@ -12,11 +12,26 @@ import nodeImage from "../asserts/recipe node.svg";
 
 function AppendSvgNode() {
   var myRef = React.useRef(null);
+  console.log(shortData);
+
+  var childLinksData = [
+    { source: "onion", target: "Geborand", value: 1 },
+    { source: "redOnion", target: "Geborand", value: 8 },
+    { source: "greenChilie", target: "Geborand", value: 10 },
+    { source: "blueOnion", target: "Geborand", value: 1 },
+  ];
+
+  var chidNodeData = [
+    { id: "Geborand", group: 100, value: 4 },
+    { id: "onion", group: 1, value: 1 },
+    { id: "redOnion", group: 1, value: 2 },
+    { id: "greenChilie", group: 1, value: 3 },
+    { id: "blueOnion", group: 1, value: 3 },
+  ];
+  const [linksReference, setLinksReference] = React.useState("");
+  const [nodesReference, setNodesReference] = React.useState("");
+
   React.useEffect(() => {
-    // Copyright 2021 Observable, Inc.
-    // Released under the ISC license.
-    // https://observablehq.com/@d3/force-directed-graph
-    // ForceGraph();
     ForceGraph(shortData, {
       nodeId: (d) => d.id,
       nodeGroup: (d) => d.group,
@@ -51,8 +66,8 @@ function AppendSvgNode() {
         linkStrokeLinecap = "round", // link stroke linecap
         linkStrength,
         colors = d3.schemeTableau10, // an array of color strings, for the node groups
-        width = 640, // outer width, in pixels
-        height = 400, // outer height, in pixels
+        width = 300, // outer width, in pixels
+        height = 300, // outer height, in pixels
         invalidation, // when this promise resolves, stop the simulation
       } = {}
     ) {
@@ -84,7 +99,7 @@ function AppendSvgNode() {
       const forceNode = d3
         .forceManyBody()
         .strength(function (d, i) {
-          var a = i === 0 ? -10000 : -6000;
+          var a = i === 0 ? -7000 : -6000;
           return a;
         })
         .distanceMin(0)
@@ -98,7 +113,6 @@ function AppendSvgNode() {
         .force("link", forceLink)
         .force("charge", forceNode)
         .force("center", d3.forceCenter())
-
         .on("tick", ticked);
 
       const svg = d3
@@ -109,25 +123,87 @@ function AppendSvgNode() {
         .attr("viewBox", [-width / 2, -height / 2, width, height])
         .attr("style", "max-width: 100vw;  height: intrinsic; color , green");
       // .attr("style", );
+      const g = svg.append("g").attr("class", "links");
+      // =================================================================================================
+      // =============================================Arrows==============================================
 
-      const link = svg
-        .append("g")
-        .attr("stroke", "black")
-        .attr("stroke-opacity", linkStrokeOpacity)
-        .attr("stroke-width", 1)
-        .attr("stroke-linecap", linkStrokeLinecap)
-        .selectAll("line")
-        .attr("line-width", 2)
+      var arrow = svg
+        .append("defs")
+        .selectAll("marker")
+        .data(["line-end"])
+        .enter()
+        .append("marker")
+        .attr("id", "line-end")
+        .attr("viewBox", "-1 -3 10 10")
+        .attr("refX", 140)
+        .attr("refY", 0)
+        .attr("markerUnits", "userSpaceOnUse")
+        .attr("markerWidth", 10)
+        .attr("markerHeight", 10)
+        .attr("orient", "auto")
+
+        .append("path")
+        .attr("transform", "translate(8, -2) rotate(80)")
+        .attr("d", "M0,-5L10,0L0,10")
+        .attr("fill", "#333");
+
+      var linkMainGroup = g
+        .selectAll(".link")
         .data(links)
-        .join("line");
+        .enter()
+        .append("line")
+        .attr("class", "link")
+        .style("stroke", "black")
+        .attr("stroke-opacity", 1)
+        .attr("fill", "black")
+        .attr("stroke-width", 1)
+        .style("stroke-dasharray", "5,5") //dashed array for line
+        .attr("marker-end", (d) => {
+          return "url(#line-end)";
+        });
+
+      // =============================================Arrows===============================================
+      // ==================================================================================================
+
+      // ========================================================================
+      // .append("g")
+      // .attr("class", "lineGroup")
+      // .attr("stroke", "black")
+      // .attr("stroke-opacity", linkStrokeOpacity)
+      // .attr("stroke-width", 1)
+      // .attr("stroke-linecap", linkStrokeLinecap)
+      // .selectAll("line")
+      // .attr("line-width", 2)
+      // .data(links)
+      // .join("line")
+      // .style("stroke-dasharray", "5,5"); //dashed array for line
+      // ========================================================================
+
+      // const myLinksAttach = svg
+      //   .selectAll(".lineGroup")
+      //   .append("line")
+      //   .attr("stroke", "black")
+      //   .attr("stroke-opacity", linkStrokeOpacity)
+      //   .attr("stroke-width", 1)
+      //   .attr("stroke-linecap", linkStrokeLinecap)
+      //   .attr("line-width", 2)
+      //   .style("stroke-dasharray", "5,5"); //dashed array for line
+
+      // const arrow = svg
+      //   .selectAll(".lineGroup")
+      //   .append("path")
+      //   .attr("d", d3.line()([[100, 60]]))
+      //   .attr("stroke", "black")
+      //   .attr("marker-end", "url(#arrow)")
+      //   .attr("fill", "none");
 
       const node = svg
-
         .append("g")
+        .attr("class", "nodes")
         .selectAll("g")
         .data(nodes)
         .join("g")
-
+        .attr("stroke", 1)
         .attr("class", (d, i) =>
           i === 0 ? `imgClass${i}`.toString() : "imgClassing"
         )
@@ -135,7 +211,7 @@ function AppendSvgNode() {
         .on("mouseover", addText)
         .on("mouseleave", removeText)
         .on("mouseout", function () {
-          link.style("stroke-width", 1);
+          linkMainGroup.style("stroke-width", 1);
         })
         .call(drag(simulation));
       // center circle
@@ -215,7 +291,116 @@ function AppendSvgNode() {
         .attr("y", "-10")
         .attr("width", "20")
         .attr("height", "20");
+
+      const childLinks = svg
+        .append("g")
+        .attr("class", "childLinkContainer")
+        .selectAll(".childLink")
+        .data(childLinksData)
+        .enter()
+        .append("g")
+        .attr("class", "childLink");
+
+      const childNodes = svg
+        // .append("g")
+        // .attr("class", "childNodeContainer")
+        // .selectAll(".childNode")
+        // .data(chidNodeData)
+        // .enter()
+        // .append("g")
+        // .attr("class", "childNode")
+        // .call(drag(simulation));
+        .append("g")
+        .attr("class", "nodes1")
+        .selectAll("g")
+        .data(nodes)
+        .join("g")
+        .attr("stroke", 1)
+        .attr("class", "childNode")
+        .call(drag(simulation));
+
       // append substitution shiffle icons to the small icons
+      // =================================substitution appending nodes=====================================================
+
+      const substituteFunction = (event, d) => {
+        // svg
+        //   .selectAll(".childLink")
+        //   .append("line")
+        //   .attr("stroke", "black")
+        //   .attr("stroke-opacity", linkStrokeOpacity)
+        //   .attr("stroke-width", 1)
+        //   .attr("stroke-linecap", linkStrokeLinecap)
+        //   .attr("line-width", 2)
+        //   .style("stroke-dasharray", "5,5"); //dashed array for line
+        // svg
+        //   .selectAll(".childNode")
+        //   .append("rect")
+        //   .attr("height", "40px")
+        //   .attr("width", "130px")
+        //   .attr("fill", "white")
+        //   .attr("x", "-60px")
+        //   .attr("y", "-20px")
+        //   .attr("rx", "20px")
+        //   .style("stroke", "#8ee556")
+        //   .style("stroke-width", 2);
+        // // append circles in rectangle node
+        // svg
+        //   .selectAll(".childNode")
+        //   .append("circle")
+        //   .attr("r", 20)
+        //   .attr("cx", -40)
+        //   .attr("fill", "#e8fadc")
+        //   .style("stroke", "#8ee556")
+        //   .style("stroke-width", 2);
+        // bold text in rectangle node
+        // var childLinks = svg
+        //   .selectAll(".subLink")
+        //   .data(childLinksData)
+        //   .enter()
+        //   .append("line")
+        //   .attr("class", "linking")
+        //   .style("stroke", "black")
+        //   .attr("stroke-opacity", 1)
+        //   .attr("fill", "black")
+        //   .attr("stroke-width", 1)
+        //   .style("stroke-dasharray", "5,5") //dashed array for line
+        //   .attr("marker-end", (d) => {
+        //     return "url(#line-end)";
+        //   });
+        // var childNodes = svg
+        //   .append("g")
+        //   .selectAll("g")
+        //   .data(chidNodeData)
+        //   .join("g")
+        //   .attr("stroke", (g) => console.log(g))
+        //   .attr("class", (d, i) => {
+        //     return "subNodeClassing";
+        //   })
+        //   // .attr("transform", (g) => `translate(${g.x}, ${g.y})`)
+        //   .on("mouseover", addText)
+        //   .on("mouseleave", removeText)
+        //   .on("mouseout", function () {
+        //     childLinks.style("stroke-width", 1);
+        //   })
+        //   .call(drag(simulation));
+        // svg
+        //   .selectAll(".subNodeClassing")
+        //   .append("rect")
+        //   .attr("height", "40px")
+        //   .attr("width", "130px")
+        //   .attr("fill", "white")
+        //   .attr("x", "-60px")
+        //   .attr("y", "-20px")
+        //   .attr("rx", "20px")
+        //   .style("stroke", "#8ee556")
+        //   .style("stroke-width", 2);
+        // // console.log(childNodes);
+        // setLinksReference(childNodes);
+        // setNodesReference(childLinks);
+        // console.log(childNodes);
+      };
+
+      // ========================================================================================
 
       svg
         .selectAll(".imgClassing")
@@ -224,7 +409,8 @@ function AppendSvgNode() {
         .attr("x", "37.4")
         .attr("y", "-42.5")
         .attr("width", "45")
-        .attr("height", "45");
+        .attr("height", "45")
+        .on("click", substituteFunction);
       // append node svg to the center one circle
       svg
         .selectAll(".imgClass0")
@@ -235,7 +421,7 @@ function AppendSvgNode() {
         .attr("width", "80")
         .attr("height", "80");
       function addText(event, d) {
-        console.log(d);
+        // console.log(d);
         svg
           .append("text")
           .attr("class", "labels")
@@ -244,12 +430,12 @@ function AppendSvgNode() {
           .attr("font-size", ".85em")
           //.text("hello");
           .text(d.id);
-        console.log(d);
-        link.style("stroke-width", function (l) {
-          if (d === l.source || d === l.target) return 4;
+        // console.log(d);
+        linkMainGroup.style("stroke-width", function (l) {
+          if (d === l.source || d === l.target) return 2;
           else return 1;
         });
-        link.style("fill", function (l) {
+        linkMainGroup.style("fill", function (l) {
           if (d === l.source || d === l.target) return "green";
           else return "red";
         });
@@ -259,7 +445,7 @@ function AppendSvgNode() {
         d3.selectAll("text.labels").remove();
       }
 
-      if (W) link.attr("stroke-width", ({ index: i }) => W[i]);
+      if (W) linkMainGroup.attr("stroke-width", ({ index: i }) => W[i]);
       if (G) node.attr("fill", ({ index: i }) => color(G[i]));
       if (T) node.append("title").text(({ index: i }) => T[i]);
       if (invalidation != null) invalidation.then(() => simulation.stop());
@@ -271,13 +457,28 @@ function AppendSvgNode() {
       }
 
       function ticked() {
-        link
+        linkMainGroup
           .attr("x1", (d) => d.source.x)
           .attr("y1", (d) => d.source.y)
           .attr("x2", (d) => d.target.x)
           .attr("y2", (d) => d.target.y);
 
         node.attr("transform", (d) => `translate(${d.x}, ${d.y})`);
+        childLinks
+          .attr("x1", (d) => d.source.x)
+          .attr("y1", (d) => d.source.y)
+          .attr("x2", (d) => d.target.x)
+          .attr("y2", (d) => d.target.y);
+        childNodes.attr("transform", (d) => `translate(${d.x}, ${d.y})`);
+        // svg
+        //   .selectAll(".linking")
+        //   .attr("x1", (d) => d.source.x)
+        //   .attr("y1", (d) => d.source.y)
+        //   .attr("x2", (d) => d.target.x)
+        //   .attr("y2", (d) => d.target.y);
+        // svg
+        //   .selectAll(".subNodeClassing")
+        //   .attr("transform", (d) => console.log(d));
       }
 
       function drag(simulation) {
