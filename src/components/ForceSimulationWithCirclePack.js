@@ -32,7 +32,7 @@ const ForceSimulationWithCirclePack = () => {
     //     nodeGroup == null ? null : d3.scaleOrdinal(nodeGroups, colors);
 
     const text = (links) => {
-      console.log(links);
+      // console.log(links);
     };
     text(links);
 
@@ -190,7 +190,7 @@ const ForceSimulationWithCirclePack = () => {
       .attr("dy", (d) => nodeRadiusScale(d.value) + 5)
       .text((d) => d.id);
     function addText(event, d) {
-      console.log(d);
+      // console.log(d);
       svg
         .append("text")
         .attr("class", "labels")
@@ -199,7 +199,7 @@ const ForceSimulationWithCirclePack = () => {
         .attr("font-size", ".85em")
         //.text("hello");
         .text(d.id + d.group);
-      console.log(d);
+      // console.log(d);
       linkss.style("stroke-width", function (l) {
         if (d === l.source || d === l.target) return 1;
         else return 1;

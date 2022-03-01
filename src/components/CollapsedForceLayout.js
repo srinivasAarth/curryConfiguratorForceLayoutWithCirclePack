@@ -49,8 +49,8 @@ const CollapsedForceLayout = () => {
       }
     }
     function collapseAll() {
-      collapse(root);
-      update();
+      collapse();
+      update(root);
     }
     // update();
     collapseAll();

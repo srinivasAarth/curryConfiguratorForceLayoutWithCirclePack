@@ -53,8 +53,8 @@ function App() {
       } = {}
     ) {
       // Compute values.
-      console.log(nodes);
-      console.log(links);
+      // console.log(nodes);
+      // console.log(links);
       const N = d3.map(nodes, nodeId).map(intern);
       const LS = d3.map(links, linkSource).map(intern);
       const LT = d3.map(links, linkTarget).map(intern);
@@ -146,7 +146,7 @@ function App() {
       const smallCircles = node;
 
       function addText(event, d) {
-        console.log(d);
+        // console.log(d);
         svg
           .append("text")
           .attr("class", "labels")
@@ -155,7 +155,7 @@ function App() {
           .attr("font-size", ".85em")
           //.text("hello");
           .text(d.id + d.group);
-        console.log(d);
+        // console.log(d);
         link.style("stroke-width", function (l) {
           if (d === l.source || d === l.target) return 4;
           else return 1;

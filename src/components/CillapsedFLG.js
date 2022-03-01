@@ -1,17 +1,28 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-expressions */
 import React from "react";
 import { data } from "../components/CollapsedFGLData";
 import * as d3 from "d3";
 import mySubsitutionImage from "../asserts/substitutionSvg.svg";
 import shiffleImage from "../asserts/shiffleIcons.svg";
 import nodeImage from "../asserts/recipe node.svg";
+import "../App.css";
+import react from "react";
 const CillapsedFLG = () => {
-  console.log(data);
+  // console.log(data);
   const collapsedFLGRef = React.useRef(null);
+  const dataRef = React.useRef({ bool: false });
+  const [getData, setGetData] = React.useState([]);
+  // const [changeData, setChangeData] = React.useState(data);
+  // console.log(changeData);
 
   React.useEffect(() => {
     var width = 1200,
       height = 700,
-      root;
+      root,
+      links,
+      nodes,
+      substitutionsArray = {};
 
     const simulation = d3
       .forceSimulation()
@@ -43,10 +54,13 @@ const CillapsedFLG = () => {
       .attr("stroke", "black")
       .attr("viewBox", [-width / 2, -height / 2, width, height])
       .attr("fill", "gray");
-    var link = svg.selectAll(".link"),
-      node = svg.selectAll(".node");
+    // var link = svg.selectAll(".link"),
+    //   node = svg.selectAll(".node");
+    var link = svg.append("g").attr("class", "links"),
+      node = svg.append("g").attr("class", "nodes");
     root = d3.hierarchy(data);
     function collapse(d) {
+      // console.log(d);
       if (d.children) {
         d._children = d.children;
 
@@ -56,38 +70,66 @@ const CillapsedFLG = () => {
       }
     }
     function collapseAll(dd) {
-      //   collapse(root);
-      root.children.forEach(collapse);
-
-      update();
+      dd.children.forEach(collapse);
+      // console.log(dd);
+      update(dd);
     }
-    update();
-    collapseAll();
+    update(root);
+    collapseAll(root);
     var nodeEnter, linkEnter;
-    function update() {
-      const nodes = flatten(root);
-      const links = root.links();
 
-      link = svg.selectAll(".link").data(links, function (d) {
-        return d.target.id;
-      });
+    function update(graphData) {
+      nodes = flatten(graphData);
+      links = graphData.links();
+      console.log(nodes);
+      link = svg
+        .select(".links")
+        .selectAll(".link")
+        .data(links, function (d) {
+          return d;
+        });
 
       link.exit().remove();
+
+      var linksColor = d3.scaleOrdinal(d3.schemeTableau10);
 
       linkEnter = link
         .enter()
         .append("line")
         .attr("class", "link")
-        .style("stroke", "black")
+        .style("stroke", (d, i) => {
+          return d.source.data.linkType === "subNodes2"
+            ? linksColor(i)
+            : d.source.data.linkType === "subNodes1"
+            ? linksColor(i)
+            : d.source.data.linkType === "subNodes2"
+            ? linksColor(i)
+            : d.source.data.linkType === "subNodes3"
+            ? linksColor(i)
+            : d.source.data.linkType === "subNodes4"
+            ? linksColor(i)
+            : d.source.data.linkType === "subNodes5"
+            ? linksColor(i)
+            : d.source.data.linkType === "subNodes6"
+            ? linksColor(i)
+            : d.source.data.linkType === "subNodes7"
+            ? linksColor(i)
+            : d.source.data.linkType === "subNodes8"
+            ? linksColor(i)
+            : "black";
+        })
         .style("opacity", "0.2")
-        .style("stroke-width", 2)
+        .style("stroke-width", 1)
         .style("stroke-dasharray", "5,5"); //dashed array for line
 
       link = linkEnter.merge(link);
 
-      node = svg.selectAll(".node").data(nodes, function (d) {
-        return d.id;
-      });
+      node = svg
+        .select(".nodes")
+        .selectAll(".node")
+        .data(nodes, function (d) {
+          return d.id;
+        });
 
       node.exit().remove();
 
@@ -97,25 +139,25 @@ const CillapsedFLG = () => {
         .attr("class", "node")
         .attr("stroke", "#666")
         .attr("stroke-width", 2)
-        .style("fill", color)
+        // .style("fill", color)
         .style("opacity", 1)
         .on("click", click)
         .raise()
         .on("mouseover", addText)
         .call(drag(simulation))
         .on("mouseout", function () {
-          link.style("opacity", ".2");
+          link.style("opacity", "1");
         });
       function addText(event, d) {
         // console.log(d);
 
         link.style("opacity", function (l) {
-          if (d === l.source || d === l.target) return ".7";
-          else return ".2";
+          if (d === l.source || d === l.target) return "1";
+          else return "1";
         });
       }
-
-      const centerNode = nodeEnter.filter((d, i) => i === 48);
+      // console.log(links.length);
+      const centerNode = nodeEnter.filter((d, i) => i === links.length);
 
       centerNode
         .append("svg:image")
@@ -125,37 +167,102 @@ const CillapsedFLG = () => {
         .attr("width", "70")
         .attr("height", "70");
 
-      const childNodes = nodeEnter.filter((d, i) => i !== 48);
+      const childNodes = nodeEnter.filter((d, i) => i !== links.length);
       childNodes
         .append("rect")
-
         .attr("height", "35px")
         .attr("width", "100px")
         .attr("fill", "white")
         .attr("x", "-57px")
         .attr("y", "-17.5px")
         .attr("rx", "18px")
-        .style("stroke", "#8ee556")
-        .style("stroke-width", 2);
+        .style("stroke", (d, i) => {
+          return d.parent.data.linkType === "subNodes2"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes1"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes2"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes3"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes4"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes5"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes6"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes7"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes8"
+            ? linksColor(i)
+            : "#8ee556";
+        })
+        .style("stroke-width", 1);
+
       childNodes
         .append("circle")
         .attr("r", 17)
         .attr("cx", -40)
-        .attr("fill", "#e8fadc")
+        // .attr("fill", "#e8fadc")
+        .attr("fill", (d, i) => {
+          return d.parent.data.linkType === "subNodes2"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes1"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes2"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes3"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes4"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes5"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes6"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes7"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes8"
+            ? linksColor(i)
+            : "#8ee556";
+        })
+        .attr("fill-opacity", ".25")
         .style("stroke", "#8ee556")
-        .style("stroke-width", 2);
+        .style("stroke", (d, i) => {
+          // console.log(d.parent.data.linkType);
+          return d.parent.data.linkType === "subNodes2"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes1"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes2"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes3"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes4"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes5"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes6"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes7"
+            ? linksColor(i)
+            : d.parent.data.linkType === "subNodes8"
+            ? linksColor(i)
+            : "#8ee556";
+        })
+        .style("stroke-width", 1);
 
       childNodes
         .append("text")
         .style("fill", "black")
-        .style("font-weight", "lighter")
-        .style("font-family", "Roboto, sans-serif")
+        .style("font-weight", "100")
+        .attr("class", "fontFormat")
+
         .attr("font-size", ".8em")
         .attr("text-anchor", "middle")
         .attr("alignment-baseline", "middle")
         .attr("dy", -6)
         .attr("dx", 10)
-        .text((d, i) => d.id);
+        .text((d, i) => d.data.name);
 
       childNodes
         .append("text")
@@ -174,10 +281,10 @@ const CillapsedFLG = () => {
       childNodes
         .append("svg:image")
         .attr("xlink:href", mySubsitutionImage)
-        .attr("x", "-50")
-        .attr("y", "-10")
-        .attr("width", "20")
-        .attr("height", "20");
+        .attr("x", "-47")
+        .attr("y", "-7")
+        .attr("width", "15")
+        .attr("height", "15");
       childNodes
         .append("svg:image")
         .attr("xlink:href", shiffleImage)
@@ -231,59 +338,63 @@ const CillapsedFLG = () => {
         .attr("y2", function (d) {
           return d.target.y;
         });
+
       node.attr("transform", function (d) {
         return "translate(" + d.x + "," + d.y + ")";
       });
     }
 
-    function color(d) {
-      return d._children
-        ? "#3182bd" // collapsed package
-        : d.children
-        ? "#c6dbef" // expanded package
-        : "#fd8d3c"; // leaf node
-    }
-
-    // Toggle children on click.
     function click(event, t) {
-      if (event.defaultPrevented) return; // ignore drag
-      var hello = node._groups[0].map((ele) => ele);
-      console.log(hello);
-      // hello.filter((el) =>
-      //   el.__data__ === t
-      //     ? (el.__data__.children = t._children)
-      //     : console.log("hello")
-      // );
-      // if (t.children !== null) {
-      //   linkEnter.style("stroke", "red").style("opacity", "1");
-      // } else {
-      //   linkEnter.style("stroke", "#000");
-      // }
-
-      //   ==============================================================
+      console.log(t);
       if (t.children) {
-        // t._children = t.children;
-        // t.children = null;
-        collapseAll();
+        if (t.index === nodes.length - 1) return collapseAll(root);
+        else {
+          t._children = t.children;
+          t.children = null;
+          collapseAll(root);
+        }
       } else {
-        hello.forEach((el, i) => {
-          console.log(el.__data__.children);
-          if (el.__data__ === t) {
-            el.__data__.children = t._children;
-          } else {
-            collapseAll();
-          }
-        });
-
         t.children = t._children;
         t._children = null;
-      }
-      // console.log(node.children);
+        if (t.data.substituteData) {
+          substitutionsArray = t.data.substituteData;
+          const hello = substitutionsArray.map((el, i) => (
+            <button key={el.sub} onClick={() => substitutionFunction(el, t)}>
+              {el.sub}
+            </button>
+          ));
+          setGetData(hello);
+        }
 
-      update();
+        closeSiblings(t);
+      }
+      update(root);
     }
-    // Returns a list of all nodes under the root.
-    function flatten(root) {
+    function closeSiblings(d) {
+      d.index === nodes.length && collapseAll(root);
+      if (!d.parent) return; // root case
+      d.parent.children.forEach(function (d1) {
+        if (d1 === d || !d1.children) return;
+
+        d1._children = d1.children;
+        d1.children = null;
+        update(root);
+      });
+    }
+    const substitutionFunction = (e, t) => {
+      const i = data.children.indexOf(t.data);
+      data.children[i].name = e.sub;
+
+      const tree = d3.hierarchy(data);
+      simulation.alphaTarget(1).restart();
+      // closeSiblings();
+      collapseAll(tree);
+      t.parent.children.forEach(function (d1) {
+        if (d1 === t || !d1.children) return collapse(d1);
+      });
+    };
+
+    function flatten(refData) {
       var nodes = [],
         i = 0;
       function recurse(node) {
@@ -291,11 +402,17 @@ const CillapsedFLG = () => {
         if (!node.id) node.id = ++i;
         nodes.push(node);
       }
-      recurse(root);
+      recurse(refData);
       return nodes;
     }
-  });
-  return <div ref={collapsedFLGRef}></div>;
+  }, []);
+  // console.log(getData);
+  return (
+    <>
+      <div ref={collapsedFLGRef}></div>
+      <div ref={dataRef}>{getData}</div>
+    </>
+  );
 };
 
 export default CillapsedFLG;

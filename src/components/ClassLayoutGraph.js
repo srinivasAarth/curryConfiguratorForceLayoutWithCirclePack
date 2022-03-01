@@ -4,7 +4,7 @@ import data from "../components/classLayoutData.json";
 import "../App.css";
 const ClassLayoutGraph = () => {
   const classLayoutRef = React.useRef();
-  console.log(classLayoutRef);
+  // console.log(classLayoutRef);
   React.useEffect(() => {
     var height = 1500,
       width = 1500;

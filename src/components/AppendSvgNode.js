@@ -12,7 +12,7 @@ import nodeImage from "../asserts/recipe node.svg";
 
 function AppendSvgNode() {
   var myRef = React.useRef(null);
-  console.log(shortData);
+  // console.log(shortData);
 
   var childLinksData = [
     { source: "onion", target: "Geborand", value: 1 },
@@ -72,8 +72,8 @@ function AppendSvgNode() {
       } = {}
     ) {
       // Compute values.
-      console.log(nodes);
-      console.log(links);
+      // console.log(nodes);
+      // console.log(links);
       const N = d3.map(nodes, nodeId).map(intern);
       const LS = d3.map(links, linkSource).map(intern);
       const LT = d3.map(links, linkTarget).map(intern);
