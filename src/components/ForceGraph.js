@@ -1,8 +1,15 @@
-import React from 'react';
-import { runForceGraph } from './ForceGraphGenerator';
-import styles from './ForceGraph.module.css';
+import React from "react";
+import { runForceGraph } from "./ForceGraphGenerator";
+import styles from "./ForceGraph.module.css";
 
-export function ForceGraph({ linksData, nodesData, tlinks, tnodes }) {
+export function ForceGraph({
+  linksData,
+  nodesData,
+  tlinks,
+  tnodes,
+  lengthing,
+  setSubstituteState,
+}) {
   const containerRef = React.useRef(null);
 
   React.useEffect(() => {
@@ -14,13 +21,15 @@ export function ForceGraph({ linksData, nodesData, tlinks, tnodes }) {
         linksData,
         nodesData,
         tlinks,
-        tnodes
+        tnodes,
+        lengthing,
+        setSubstituteState
       );
       destroyFn = destroy;
     }
 
     return destroyFn;
-  }, [linksData, nodesData, tlinks, tnodes]);
+  }, [linksData, nodesData, tlinks, tnodes, lengthing, setSubstituteState]);
 
   return <div ref={containerRef} className={styles.container} />;
 }

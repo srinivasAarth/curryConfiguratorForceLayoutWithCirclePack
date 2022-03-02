@@ -1,83 +1,215 @@
 /* eslint-disable no-undef */
-import './App.css';
-import * as d3 from 'd3';
-import React from 'react';
-import { ForceGraph } from './components/ForceGraph.js';
+import "./App.css";
+import * as d3 from "d3";
+import React from "react";
+import { ForceGraph } from "./components/ForceGraph.js";
+import SubstituteOptions from "./components/SubstituteOptions";
 
 function App() {
+  const [substitutes, setSubstituteState] = React.useState([]);
   const graphData = {
     nodes: [
       {
-        name: 'hariMohan',
+        name: "hariMohan",
         id: 1,
       },
       {
-        name: 'mithilesh',
+        name: "mithilesh",
         id: 2,
+        substituteData: [
+          {
+            name: "Darci",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+          {
+            name: "Darci",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+          {
+            name: "Darci",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+          {
+            name: "Darci",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+        ],
       },
 
       {
-        name: 'avdesh',
+        name: "avdesh",
         id: 3,
+        substituteData: [
+          {
+            name: "Hello",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+          {
+            name: "Hello",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+          {
+            name: "Hello",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+          {
+            name: "Hello",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+        ],
       },
       {
-        name: 'akhilesh',
+        name: "akhilesh",
         id: 4,
+        substituteData: [
+          {
+            name: "shanu",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+          {
+            name: "shanu",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+          {
+            name: "shanu",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+          {
+            name: "shanu",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+        ],
       },
       {
-        name: 'sarvesh',
+        name: "sarvesh",
         id: 5,
+        substituteData: [
+          {
+            name: "chary",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+          {
+            name: "chary",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+          {
+            name: "chary",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+          {
+            name: "chary",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+        ],
       },
       {
-        name: 'bhavesh',
+        name: "bhavesh",
         id: 6,
+        substituteData: [
+          {
+            name: "madhuri",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+          {
+            name: "madhuri",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+          {
+            name: "madhuri",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+          {
+            name: "madhuri",
+            property: "bhanu",
+            quantity: "10grm",
+            nutrition: "15cl",
+          },
+        ],
       },
       {
-        name: 'shanu',
+        name: "shanu",
         id: 7,
       },
       {
-        name: 'Richa',
+        name: "Richa",
         id: 8,
       },
       {
-        name: 'bhanu',
+        name: "bhanu",
         id: 9,
       },
       {
-        name: 'Aditya',
+        name: "Aditya",
         id: 10,
       },
       {
-        name: 'shilpi',
+        name: "shilpi",
         id: 11,
       },
       {
-        name: 'rashmi',
+        name: "rashmi",
         id: 12,
       },
       {
-        name: 'piyush',
+        name: "piyush",
         id: 13,
       },
       {
-        name: 'Bhavya',
+        name: "Bhavya",
         id: 14,
       },
       {
-        name: 'Divya',
+        name: "Divya",
         id: 15,
       },
       {
-        name: 'rey',
+        name: "rey",
         id: 16,
       },
       {
-        name: 'aarya',
+        name: "aarya",
         id: 17,
       },
       {
-        name: 'virat',
+        name: "virat",
         id: 18,
       },
     ],
@@ -164,6 +296,8 @@ function App() {
       }
     }
   });
+  console.log(substitutes);
+  const lengthing = initialLink.length;
 
   return (
     <div rclassName="App">
@@ -171,10 +305,17 @@ function App() {
         <ForceGraph
           linksData={initialLink}
           nodesData={initialNodes}
+          lengthing={lengthing}
           tlinks={graphData.links}
           tnodes={graphData.nodes}
+          setSubstituteState={setSubstituteState}
         />
       </section>
+      <div>
+        {substitutes.length !== 0 && (
+          <SubstituteOptions substitutes={substitutes} />
+        )}
+      </div>
     </div>
   );
 }
